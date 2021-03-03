@@ -8,7 +8,6 @@ import numpy as np
 
 
 # TODO use torch.empty instead of numpy.array
-# TODO GUI not closing
 
 np.random.seed(0)
 

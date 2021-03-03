@@ -6,6 +6,14 @@ def input_type_checking(nr_hidden_layers, nr_neurons_per_hidden,
                 activation_functions, learning_rate, number_training_epochs):
     """
     For all variables defined by user input, check if the values are correct.
+
+    Args:
+        nr_hidden_layers (int):         User input for number of hidden layers
+        nr_neurons_per_hidden (list):   User input for number neurons per layer
+        activation_functions (list):    User input for activation functions per
+                                            hidden layer
+        learning_rate (float):          User input for learning rate
+        number_training_epochs (int):   User input for number of training epochs
     """
     if not (nr_hidden_layers == len(nr_neurons_per_hidden)):
         raise ValueError(f"Neuron Number per Layer ({len(nr_neurons_per_hidden)}) have different Number of Elements then the Number of Hidden layers ({nr_hidden_layers}).")
@@ -46,7 +54,7 @@ def deep_learning_form():
         if True:
 
             # close root window
-            root.quit()
+            root.destroy()
 
             # call test with given parameters
             training(2, 1, nr_hidden_layers, nr_neurons_per_hidden,
