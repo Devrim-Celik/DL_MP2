@@ -25,9 +25,3 @@ def generate_standard_data(N=1000, center_value=0.5, radius=1/np.sqrt(2*np.pi)):
     Y = (np.linalg.norm(X-center_value, axis=1) <= radius).astype(int)
 
     return X[:N], Y[:N], X[N:], Y[N:]
-
-def plot_data(X, Y):
-    colors = {}
-    plt.figure("Data Plot")
-    plt.scatter(X[:,0], X[:,1], color=np.array(["red" if x == 0 else "blue" for x in Y]))
-    plt.show()
