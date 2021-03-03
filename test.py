@@ -8,18 +8,47 @@ import numpy as np
 
 
 # TODO use torch.empty instead of numpy.array
-# TODO comments
-# TODO check input for wrong things
+# TODO GUI not closing
 
 np.random.seed(0)
 
 MODEL_PATH = "./models/"
 
 def training(num_inputs = 2, num_outputs = 1, nr_hidden = 3,
-            num_hidden = [25, 25, 25], activation_functions = [2, 6, 3],
+            number_hidden_neurons = [25, 25, 25],
+            activation_functions = [2, 6, 3],
             learning_rate = 0.0001, training_epochs = 500,
-            stopping_condition_n = 3, verbose = False):
+            stopping_condition_n = 3, save_weight = True,
+            show_performance_plot = True, verbose = False):
+    """
+    Main function that, given informations about a neural network setup,
+    * generates training and test data
+    * initilizes a neural network
+    * trains the neural network
 
+    Args:
+        num_inputs (int):               Number of input nodes
+        num_outputs (int):              Number of output nodes
+        nr_hidden (int):                Number of hidden layers
+        number_hidden_neurons (list):   Number of neurons per hidden layer
+        activation_functions (list):    Activation layers per hidden layer
+                        (decoded as numbers between 1 and 6)
+                        1: Linear
+                        2: ReLU
+                        3: Tanh
+                        4: Sigmoid
+                        5: Leaky ReLU
+                        6: Swish
+        learning_rate (float):          Learning rate
+        training_epochs (int):          Number of training epochs
+        stopping_condition_n (int):     Stopping condition parameter
+        save_weight (bool):             Whether to save model weights
+        show_performance_plot (bool):   Whether to plot performance plot
+        verbose (bool):                 Verbose
+
+    Returns:
+        network (NeuralNetwork):        Trained neural network
+    """
     print("[!] STARTING TRAINING")
 
     # translation dictionary for activation_functions
@@ -30,7 +59,7 @@ def training(num_inputs = 2, num_outputs = 1, nr_hidden = 3,
     used_layers = [number_to_activation[i-1] for i in activation_functions]
 
     # merging input + output + hidden neuron numbers into one structure
-    used_neurons = [num_inputs] + num_hidden + [num_outputs]
+    used_neurons = [num_inputs] + number_hidden_neurons + [num_outputs]
 
     # initialized layers
     initialized_layers = [layer_class(used_neurons[i], used_neurons[i+1]) for i, layer_class in enumerate(used_layers)]
@@ -81,7 +110,8 @@ def training(num_inputs = 2, num_outputs = 1, nr_hidden = 3,
             error = MSE.backward()
 
             # backpropagate the error
-            network._backpropagation(error, learning_rate)
+            network._backpropagation(error)
+            network._update_weights(learning_rate)
 
         # compute the mean accuracy and mse for this epoch and store it
         training_mse.append((epoch, np.mean(epoch_mse)))
@@ -102,18 +132,27 @@ def training(num_inputs = 2, num_outputs = 1, nr_hidden = 3,
         if early_stopping(testing_mse, n = stopping_condition_n):
             break
 
+    if save_weight:
+        # save the current model
+        network._save_model(MODEL_PATH)
 
-    # save the current model
-    network._save_model(MODEL_PATH)
-
-    # plot training/test error/accuracy
-    plot_performance(training_mse, training_accuracies, testing_mse, testing_accuracies)
+    if show_performance_plot:
+        # plot training/test error/accuracy
+        plot_performance(training_mse, training_accuracies, testing_mse, testing_accuracies)
 
     print("[+] TRAINING FINISHED")
 
-    # return the network
+    return network
 
 def testing(network = None):
+    """
+    For function assessing network performance on the testing data. If no
+    network is eplicitly supplied, the function tries to initialize a network
+    from a saved model.
+
+    Args:
+        network (NeuralNetwork):    NeuralNetwork object to be assessed
+    """
     print("[!] STARTING TEST")
     # generate the test data
     _, _, X_test, Y_test = generate_standard_data()

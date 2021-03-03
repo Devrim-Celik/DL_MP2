@@ -1,18 +1,30 @@
 import numpy as np
 
 class Function:
-    def __init__(self, *args, **kwargs):
-        self.memory = {}
-        self.gradient = {}
+    """
+    Base Function class used for being inherited by different activation
+    functions.
+    """
+    def __init__(self):
+        self.name = None
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self):
         pass
 
-    def derivative(self, *args, **kwargs):
+    def __repr__(self):
+        return self.name
+
+    def derivative(self):
         pass
 
 
 class Linear_Fun(Function):
+    """
+    Linear Activation Function Class
+    """
+    def __init__(self):
+        self.name = "Linear Activation Function Class"
+
     def __call__(self, x):
         return x
 
@@ -21,6 +33,12 @@ class Linear_Fun(Function):
 
 
 class ReLU(Function):
+    """
+    ReLU Activation Function Class
+    """
+    def __init__(self):
+        self.name = "ReLU Activation Function Class"
+
     def __call__(self, x):
         x[x < 0] = 0
         return x
@@ -32,6 +50,12 @@ class ReLU(Function):
 
 
 class Tanh(Function):
+    """
+    Tanh Activation Function Class
+    """
+    def __init__(self):
+        self.name = "Tanh Activation Function Class"
+
     def __call__(self, x):
         return np.tanh(x)
 
@@ -41,6 +65,12 @@ class Tanh(Function):
 
 
 class Sigmoid(Function):
+    """
+    Sigmoid Activation Function Class
+    """
+    def __init__(self):
+        self.name = "Sigmoid Activation Function Class"
+
     def __call__(self, x):
         return 1 / (1 + np.exp(-x))
 
@@ -49,6 +79,12 @@ class Sigmoid(Function):
 
 
 class Leaky_ReLU(Function):
+    """
+    Leaky ReLU Activation Function Class
+    """
+    def __init__(self):
+        self.name = "Leaky ReLU Activation Function Class"
+
     def __call__(self, x, c=0.01):
         self.c = c
         x[x < 0] *= c
@@ -60,6 +96,12 @@ class Leaky_ReLU(Function):
         return x
 
 class Swish(Function):
+    """
+    Swish Activation Function Class
+    """
+    def __init__(self):
+        self.name = "Swish Activation Function Class"
+
     def __call__(self, x, beta=1):
         self.beta = beta
         return x * self._sigmoid(beta * x)
