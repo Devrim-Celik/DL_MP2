@@ -1,1 +1,1 @@
-# DL_MP2
+# Simple_Deep_Learning_Framework
